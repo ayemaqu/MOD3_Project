@@ -136,7 +136,6 @@ HAVING COUNT( * ) > 1;
 /*
 What does a Null audit even mean T_T ?
 A = it means check how many missing values you have in the important columns.
-
 DOCUMENTATION FOR QUERY:
 Pick the key columns I care about(like IDs, dates) 
 and write queries to count how many of those are missing...
@@ -155,7 +154,8 @@ SELECT
   COUNT(*) AS total_rows,
   SUM(CASE WHEN category IS NULL THEN 1 ELSE 0 END) AS null_category,
   SUM(CASE WHEN min_height_cm IS NULL THEN 1 ELSE 0 END) AS null_min_height,
-  SUM(CASE WHEN opened_date IS NULL THEN 1 ELSE 0 END) AS null_opened_date
+  SUM(CASE WHEN opened_date IS NULL THEN 1 ELSE 0 END) AS null_opened_date,
+  SUM(CASE WHEN attraction_name IS NULL THEN 1 ELSE 0 END) AS null_attraciton_name
 FROM dim_attraction;
 
 -- Null audit for fact_purchases
@@ -242,4 +242,6 @@ ORDER BY CASE dd.day_name
     WHEN 'Saturday' THEN 6
     WHEN 'Sunday' THEN 7
 END;
+
+
 
