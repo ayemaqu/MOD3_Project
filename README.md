@@ -32,6 +32,7 @@
 
 ## EDA (SQL)
 During the EDA phase, I used SQL to validate the dataset and uncover initial patterns that would shape later analysis. Rather than diving straight into modeling, I first checked for coverage, quality, and baseline trends.
+- You can view the full query here: [01_EDA.sql](SQL/01_EDA.sql)
 
 **Time Coverage & Visit Volume**
 - Pulled the min/max visit dates and daily counts using `MIN(visit_date)`, `MAX(visit_date)`, and `COUNT(DISTINCT visit_date)`.
