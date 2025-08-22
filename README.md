@@ -32,7 +32,7 @@
 
 ## EDA (SQL)
 During the EDA phase, I used SQL to validate the dataset and uncover initial patterns that would shape later analysis. Rather than diving straight into modeling, I first checked for coverage, quality, and baseline trends.
-- You can view the full query here: [01_EDA.sql](SQL/01_EDA.sql)
+- You can view the full queries here: [01_EDA.sql](SQL/01_EDA.sql)
 
 **Time Coverage & Visit Volume**
 - Pulled the min/max visit dates and daily counts using `MIN(visit_date)`, `MAX(visit_date)`, and `COUNT(DISTINCT visit_date)`.
@@ -51,6 +51,7 @@ Overall, the EDA confirmed broad date coverage for visits, revealed which ticket
 
 ## CTEs & Window Functions (SQL)
 Below are the key CTE + window patterns I used, with tight snippets and why they matter for staffing and improvements. Four main analyses:
+- You can view the full queries here: [04_ctes_windows.sql](SQL/04_ctes_windows.sql) 
 
 1. Daily performance (Ops staffing)
    - Used running totals with `SUM(...) OVER (ORDER BY date_iso`) and `daily ranks with DENSE_RANK() OVER (ORDER BY daily_visits DESC)`.
