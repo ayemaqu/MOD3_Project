@@ -19,15 +19,15 @@
 <img width="800" height="400" alt="Screenshot 2025-08-22 at 4 58 38 PM" src="https://github.com/user-attachments/assets/e640822e-8df6-4ccf-a0f4-443b62f6f719" />
 
 ### Fact Tables
-- fact_visits: Records each guest’s visit, including date, group size, and total spend.
-- fact_purchases: Tracks in-park purchases like food, drinks, and merchandise.
-- fact_ride_events: Captures ride experiences such as wait times and satisfaction ratings.
+- `fact_visits`: Records each guest’s visit, including date, group size, and total spend.
+- `fact_purchases`: Tracks in-park purchases like food, drinks, and merchandise.
+- `fact_ride_events`: Captures ride experiences such as wait times and satisfaction ratings.
 
 ### Dimension Tables
-- dim_guest: Guest information such as home state and demographics.
-- dim_ticket: Ticket details including type, pricing, and restrictions.
-- dim_date: Calendar context like day of week, weekend flag, and season.
-- dim_attraction: Attraction details including ride name, category, and height limits.
+- `dim_guest`: Guest information such as home state and demographics.
+- `dim_ticket`: Ticket details including type, pricing, and restrictions.
+- `dim_date`: Calendar context like day of week, weekend flag, and season.
+- `dim_attraction`: Attraction details including ride name, category, and height limits.
 
 
 ## EDA (SQL)
@@ -70,5 +70,63 @@ Below are the key CTE + window patterns I used, with tight snippets and why they
 
 Together, these CTE and window function analyses connected guest behavior to concrete business actions: staffing the right days, targeting the most valuable guests, understanding spending growth on return visits, and evaluating ticket product fit. By layering queries step by step, the park can turn raw data into decisions that directly improve both guest satisfaction and revenue.
 
+
+## Visuals (Python)
+**Daily Performance**
+
+<img width="600" height="400" alt="Screenshot 2025-08-22 at 5 25 26 PM" src="https://github.com/user-attachments/assets/15b023a4-5356-45fe-9bb3-4837593f907d" />
+
+- This bar chart shows daily attendance across the observed period, with the busiest day highlighted in blue. Identifying peak days helps the Operations Director adjust staffing schedules to match demand, ensuring shorter queues and smoother guest flow. In this case, July 7th stands out as the busiest day of the week, making it worth exploring what factors—such as promotions, holidays, or special events—may have contributed to the spike.
+
+**Which Guests are most valuable**
+
+<img width="600" height="400" alt="Screenshot 2025-08-22 at 5 41 59 PM" src="https://github.com/user-attachments/assets/4eb7c33f-fcdb-4b3e-8a08-709d6c0c4aa1" />
+
+- This bar chart highlights total lifetime spend by guest home state, with California standing out as the top contributor in purple. Understanding geographic spending patterns helps the Marketing Director prioritize outreach, tailoring promotions to high-value states like CA while identifying opportunities to grow spend in lower-performing regions such as TX and FL. These insights can inform both regional advertising and park-specific offerings.
+
+**Behavioral Change by Ticket Type**
+
+<img width="600" height="400" alt="Screenshot 2025-08-22 at 5 42 53 PM" src="https://github.com/user-attachments/assets/844d3a0f-e270-43ca-ac78-d01f7a424d51" />
+
+- This bar chart shows how different ticket types influence spending behavior on repeat visits. Guests with Day Passes (highlighted in red) were most likely to increase their spending compared to prior visits, while VIP and Family Pack holders showed lower increases. For the Marketing Director, this suggests that day-pass guests may be the most responsive to upsells or in-park promotions, whereas bundled ticket holders may already be maximizing value upfront.
+
+
+## Insights & Recommendations — actions for GM/Ops/Marketing 
+
+**For the General Manager (GM)**
+- Overall guest behavior shows satisfaction with pricing tiers. The fact that guests tended to upgrade tickets (rather than downgrade) suggests the park’s pricing structure is competitive and flexible. This is a strong signal that the value proposition is resonating with visitors.
+- **Action**: Continue monitoring ticket switching trends. Upgrades can be leveraged as a performance metric for guest satisfaction and pricing effectiveness.
+
+
+**For Operations (Staffing & Queues)**
+- Daily attendance spikes (like the clear peak on July 7th) highlight when additional staffing is needed for rides, food & beverage, and guest services.
+- **Action**: Proactively schedule more staff on projected peak days (especially Mondays following weekends) to shorten queues and improve flow.
+
+
+**For Marketing (Promotions & Ticket Mix)**
+- Geographic insights show CA and NY guests generate the highest lifetime value (CLV). This indicates strong markets for targeted promotions.
+   - **Action**: Focus marketing campaigns (email, social media, travel partnerships) on high-value states, while testing strategies to boost engagement from underperforming regions like TX and FL.
+- Ticket type analysis revealed that Day Pass holders are most likely to increase spending on repeat visits.
+   - **Action**: Prioritize upsell strategies for Day Pass guests — such as bundling dining credits, photo packages, or early ride access — to maximize per-guest revenue.
+
+
+**Cross-Department Recommendation**
+- Upgrade behavior shows that the current ticket tiers are well-calibrated: guests see enough value to move into higher tiers such as VIP or Family Pack. This signals that pricing and product flexibility are a strength worth maintaining. However, operational metrics like wait times and satisfaction ratings suggest that the guest experience does not always match the higher spend. To sustain upgrade momentum, the park should pair its strong pricing structure with improvements in ride throughput and service quality, ensuring that guests feel their premium purchases deliver a premium experience.
+
+
+_Summary:_
+- The park’s ticket pricing tiers appear effective, as most guests upgraded rather than downgraded. Operationally, staffing can be optimized by anticipating peak days, while Marketing can double down on high-value states and focus upsells on flexible Day Pass guests. Together, these actions align with leadership’s goal of maximizing revenue while keeping guest satisfaction high.
+
+## Ethics & Bias — data gaps, cleaning choices, duplicates, time window, margin not modeled 
+
+Like any real-world dataset, this project involved gaps and quirks that shaped the analysis:
+
+- _Missing data and duplicates_: Several tables had nulls and exact duplicate rows. Rather than permanently deleting records in SQL, I created views to work from, which allowed me to filter and clean without losing the raw source data. This kept the process transparent and reversible.
+- _Logical inconsistencies_: Some patterns did not align intuitively, such as guests with longer wait times reporting higher satisfaction. While this may reflect quirks in survey response behavior, it also shows the limits of the dataset. These anomalies remind us not to over-interpret single metrics without context.
+- _Data coverage_: The dataset reflects only a specific time window of park operations. This means conclusions about seasonality or long-term guest behavior should be viewed with caution.
+- _Unmodeled factors_: Margins and profitability were not included in this dataset. For example, two ticket types may generate the same revenue but very different costs. That’s an important blind spot when making pricing or staffing recommendations.
+
+
+By documenting cleaning choices, acknowledging gaps, and noting where the data may not reflect reality, I aimed to keep this analysis transparent. Any real business decision should validate these findings with additional data (e.g., staff logs, survey design checks, cost data) before implementation.
 
 
