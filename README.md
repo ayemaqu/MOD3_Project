@@ -128,7 +128,30 @@ Like any real-world dataset, this project involved gaps and quirks that shaped t
 - _Data coverage_: The dataset reflects only a specific time window of park operations. This means conclusions about seasonality or long-term guest behavior should be viewed with caution.
 - _Unmodeled factors_: Margins and profitability were not included in this dataset. For example, two ticket types may generate the same revenue but very different costs. That’s an important blind spot when making pricing or staffing recommendations.
 
-
 By documenting cleaning choices, acknowledging gaps, and noting where the data may not reflect reality, I aimed to keep this analysis transparent. Any real business decision should validate these findings with additional data (e.g., staff logs, survey design checks, cost data) before implementation.
 
+## Folder Structure 
+```text
+.
+├── SQL/
+│   ├── 01_EDA.sql
+│   ├── 02_cleaning.sql
+|   ├── 03_features.sql
+|   ├── 04_ctes_windows.sql
+├── data/
+│   ├── themepark.db
+├── figures/
+│   ├── clv_by_state.png
+│   ├── daily_visits_highlighted.png
+|   ├── share_increase_by_ticket.png
+├── notebooks/
+│   ├── viz.ipynb
+|
+└── READE.md
+
+```
+
+## 👥 Connect With Me
+Thanks for checking out my project! If you’d like to chat more about analytics, data, or tech careers, let’s connect on **LinkedIn**!
+- [Ayema Qureshi](https://www.linkedin.com/in/ayema-qureshi-901287187/)
 
