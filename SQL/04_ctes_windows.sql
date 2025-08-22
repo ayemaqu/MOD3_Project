@@ -1,9 +1,9 @@
 /*
+Q1:
 Daily performance: Build a daily CTE (join fact_visits→dim_date) 
 with daily_visits and daily_spend. Add a running total window. 
 Identify top 3 peak days. (Interpret for Ops staffing.)
 */
-
 
 WITH daily AS (
   SELECT
@@ -48,7 +48,7 @@ SELECT date_iso             AS visit_date,            -- clearer name
 
 
 --====================================================================
---DOCUMENTATION:
+--DOCUMENTATION FOR Q1:
 --I first wrote a plain SELECT that joined fact_visits to dim_date, grouped by date, 
 --and calculated daily_visits and daily_spend_cents. Once that worked, 
 --I wrapped it into a CTE called daily so you could reuse it. Then I repeated 
@@ -58,17 +58,37 @@ SELECT date_iso             AS visit_date,            -- clearer name
 -- So my method was: start plain → test it → wrap in a CTE → build on top step by step.
 --====================================================================
 
-
-
+--====================================================================
+--TL;DR (brief interpertation)
+--Busiest day by visits: Monday (10 visits, rank_by_visits = 1).
+--Highest‑revenue day: Sunday (₵112,843, rank_by_spend = 1).
+--Saturday is solid but behind both on revenue and visits.
+--Ops takeaway:
+--    Mon = staff for throughput (ride ops, guest services, queues).
+--    Sun = staff for spend (food/merch cashiers, mobile‑order runners, photo/upsell).
+--    Sat = balanced coverage.
+--====================================================================
 
 
 
 
 /*
+Q2:
 RFM & CLV(Customer Lifetime Value): Define CLV_revenue_proxy = SUM(spend_cents_clean) per guest. 
 Compute RFM and rank guests by CLV within home_state using a window function. 
 (Interpret which segments to target.)
 */
+
+--I realized my data was getting skewed so I standarized the data again 
+UPDATE dim_guest
+SET home_state = CASE
+  WHEN UPPER(TRIM(home_state)) IN ('CALIFORNIA','CA') THEN 'CA'
+  WHEN UPPER(TRIM(home_state)) IN ('NEW YORK','NY')   THEN 'NY'
+  WHEN UPPER(TRIM(home_state)) IN ('FLORIDA','FL')    THEN 'FL'
+  ELSE UPPER(TRIM(home_state))
+END
+WHERE home_state IS NOT NULL;
+
 
 WITH rfm AS (
   SELECT dg.guest_id,
@@ -135,7 +155,7 @@ ORDER BY home_state, clv_rank_in_state, monetary_cents DESC;
 
 
 --====================================================================
---DOCUMENTATION
+--DOCUMENTATION FOR Q2
 --For the RFM & CLV analysis, I started by calculating Monetary as the total spend per guest 
 --(SUM(spend_cents_clean)), which I called clv_revenue_proxy. Next, I built Frequency by counting 
 --the number of visits each guest made. For Recency, I used window functions: one MAX(visit_date) 
@@ -148,11 +168,18 @@ ORDER BY home_state, clv_rank_in_state, monetary_cents DESC;
 --====================================================================
 
 
+--====================================================================
+--TL;DR (brief interpertation)
+--This analysis shows each guest’s Recency, Frequency, and Monetary (RFM) scores, 
+--and ranks them by spending within their home state. Guests with rank 1 are top 
+--spenders in their state, especially those with recent visits and high frequency, 
+--making them prime targets for loyalty perks or premium offers.
+--====================================================================
 
 
 
 /*
-Behavior change: Using LAG(spend_cents_clean) per guest (ordered by visit date), 
+Q3:Behavior change: Using LAG(spend_cents_clean) per guest (ordered by visit date), 
 compute delta vs. prior visit. What share increased? (Interpret what factors correlate with increases—ticket type, 
 day, party size.)
 */
@@ -193,6 +220,7 @@ FROM lagged;
 
 
 --====================================================================
+--DOCUMENTATION FOR Q3
 --In this query, I wanted to understand how guests’ spending changes when 
 --they return to the park. First, I used a CTE (lagged) to line up each 
 --guest’s visits in order and bring in the amount they spent on the current 
@@ -208,12 +236,22 @@ FROM lagged;
 --are actually spending more money than before.
 --====================================================================
 
+--====================================================================
+--TL;DR (brief interpertation)
+--Out of 30 repeatable visits, 13 guests spent more on their next visit 
+--compared to their prior one. That means 43.3% of guests increased their spending 
+--when they returned.
+--====================================================================
+
+
+
 
 
 
 
 
 /*
+Q4:
 Ticket switching: Using FIRST_VALUE(ticket_type_name) 
 per guest, flag if they later switched. 
 (Interpret implications for pricing/packaging.)
@@ -283,6 +321,7 @@ JOIN switched_guest sg USING (guest_id);
 
 
 --====================================================================
+--DOCUMENTATION FOR Q4
 --I started by joining fact_visits with dim_ticket so that each visit row 
 --showed the guest’s current ticket type. Then, in another CTE, I used the FIRST_VALUE 
 --window function partitioned by guest_id and ordered by visit date to capture 
@@ -298,4 +337,13 @@ JOIN switched_guest sg USING (guest_id);
 --this percentage can be broken down by first ticket type and even by previous 
 --ticket (using LAG) to see direction—who upgraded vs. downgraded—which helps 
 --interpret the implications for pricing and packaging.
+--====================================================================
+
+
+--====================================================================
+--TL;DR (brief interpertation)
+--Every eligible repeat guest switched ticket type at least once 
+--(10/10 → 100% switched). That’s a strong signal that guests don’t stick with 
+--their initial product; pricing/packaging is likely nudging them to change 
+--(promos, value gaps, or availability).
 --====================================================================

@@ -1,7 +1,7 @@
 -- If you haven't added these yet, run them ONCE (comment out if they already exist)
-
 --ALTER TABLE fact_visits    ADD COLUMN spend_cents_clean   INTEGER;
 --ALTER TABLE fact_purchases ADD COLUMN amount_cents_clean  INTEGER;
+
 
 
 -- Visits: compute cleaned once, join by rowid, update when cleaned is non-empty.. I RAN IT ONCE 
@@ -45,6 +45,7 @@ SET amount_cents_clean = CAST(
     )
 WHERE LENGTH((SELECT cleaned FROM c WHERE c.rid = fact_purchases.rowid)) > 0;
 
+
 --convert to dollars
 SELECT 
     purchase_id,
@@ -54,15 +55,19 @@ FROM fact_purchases
 LIMIT 15;
 
 
+
 -- Visits for checking purposes
 SELECT COUNT(*) AS filled_rows 
 FROM fact_visits 
 WHERE spend_cents_clean IS NOT NULL;
 
+
 -- Purchases for checking purposes 
 SELECT COUNT(*) AS filled_rows 
 FROM fact_purchases 
 WHERE amount_cents_clean IS NOT NULL;
+
+
 
 -- B) Exact duplicates
 /*
@@ -73,6 +78,8 @@ are in the fact_ride_events table (comment how many duplicates you found in your
 Think:  If there are duplicates how can you decide which one to keep?  
 Is there a way you could code this in SQL? Add your thoughts as a comment in your .sql file 
 */ 
+
+
 /*
 There are 8 rows that are duplicates, I can decide to keep 1 because they are
 the same exact rows, so for each i'll just keep one 
@@ -102,6 +109,7 @@ it’s a duplicate. In the second query, I subtract 1 from each count
 (because the first copy is the “real” one) to find only the extra copies. 
 Finally, I sum those up to get the total number of duplicate rows in the table.
 */
+
 WITH d AS (
   SELECT
     visit_id, attraction_id, ride_time, wait_minutes, satisfaction_rating, photo_purchase,
@@ -131,6 +139,7 @@ SELECT *
 FROM fact_ride_events_dupe
 LIMIT 10;
 
+
 --Confirmed no duplicates remain, now rows printed
 SELECT visit_id,
        attraction_id,
@@ -153,6 +162,8 @@ Instead of permanently deleting rows, I created a view to handle
 duplicates in a non-destructive way. This means the original data stays intact,
 but I can still query a “cleaned” version without the duplicate rows.
 */
+
+
 
 
 --5c: Validate keys 
@@ -195,6 +206,8 @@ FROM fact_ride_events fre
 LEFT JOIN dim_attraction da ON da.attraction_id = fre.attraction_id
 WHERE da.attraction_id IS NULL;
 
+
+
 -- D) Handling missing 
 /*
 DOCUMENTATION: 
@@ -207,6 +220,9 @@ Non-essential text fields (promotion_code, home_state) will be left as NULL with
 UPDATE fact_visits
 SET promotion_code = NULL
 WHERE TRIM(promotion_code) = '';
+
+
+
 
 --standarization 
 /*

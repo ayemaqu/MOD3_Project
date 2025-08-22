@@ -8,7 +8,7 @@ UNION ALL SELECT 'fact_purchases', COUNT(*) FROM fact_purchases;
 
 --Q1. Date range of visit_date; number of distinct dates; visits per date(use GROUP BY + ORDER BY).
 /* 
-DOCUMENTATION:
+DOCUMENTATION FOR Q1:
     To get the range of the dates, I found the first date and 
     last date to show the "range" and the number of distinct dates we have
  
@@ -31,13 +31,13 @@ ORDER BY visit_date;
 --Q2. Visits by ticket_type_name (join to dim_ticket), ordered by most to least.
 
 /* 
-DOCUMENTATION 
+DOCUMENTATION  for Q2
     INNER JOIN → only ticket types that actually appear in fact_visits will show up 
     (which is fine since all 3 types were used, you can also use LEFT JOIN).
     GROUP BY ticket_type_name → correctly groups visits per ticket type.
     COUNT(visit_id) → counts visits.
 
-ORDER BY num_of_visits DESC → sorts from most used ticket type to least.*/
+
 SELECT ticket_type_name, COUNT(visit_id) AS num_of_visits
 FROM dim_ticket dt
 INNER JOIN fact_visits fv ON fv.ticket_type_id = dt.ticket_type_id
@@ -45,10 +45,13 @@ GROUP BY ticket_type_name
 ORDER BY num_of_visits DESC;
 
 
+
+
+
 -- Q3. Distribution of wait_minutes (include NULL count separately).
 
 /*
- DOCUMENTATION
+ DOCUMENTATION FOR Q3
      I had to first figure out what the question meant by "Distribution", I thought it meant
      sum the number of minutes but that's not useful in this case. I learned that it mean, finding
      the: avg, min and max 
@@ -94,6 +97,8 @@ FROM fact_ride_events
 GROUP BY wait_bins
 ORDER BY wait_bins;
 
+
+
 --Q4. Average satisfaction_rating by attraction_name and by category.
 
 SELECT ROUND(AVG(satisfaction_rating),2) AS avg_ratings , da.attraction_name, da.category
@@ -103,12 +108,15 @@ GROUP BY da.attraction_name, da.category
 ORDER BY category, attraction_name, avg_ratings;
 
 
+
+
+
 -- Q5. Duplicates check: exact duplicate fact_ride_events rows (match on all columns)with counts.
 -- so find the count of dupliate rows, make sure to leave out PK, I used having to set a 
 -- condition since you cannot use where with groupby
 
 /*
-DOCUMENTATION
+DOCUMENTATION FOR Q5
 In the result, these exact combination appears twice in fact_ride_events.
 In other words, duplicate_count tells you how many times that exact combo shows up, 
 hence 8 rows showed up twice 
@@ -131,12 +139,17 @@ SELECT visit_id,
 HAVING COUNT( * ) > 1;
 
 
+
+
+
 --Q6. Null audit for key columns you care about (report counts).
 
 /*
 What does a Null audit even mean T_T ?
 A = it means check how many missing values you have in the important columns.
-DOCUMENTATION FOR QUERY:
+
+
+DOCUMENTATION FOR Q6:
 Pick the key columns I care about(like IDs, dates) 
 and write queries to count how many of those are missing...
 */
@@ -222,6 +235,7 @@ FROM dim_date;
 
 -- Q7. Average party_size by day of week (dim_date.day_name)/
 /*
+DOCUMENTATION FOR Q7:
 For this query, I wanted to display the average party size by day of the week. 
 To do this, I joined fact_visits with dim_date so I could use the weekday names 
 from the date dimension. I then grouped the results by day_name to calculate the 

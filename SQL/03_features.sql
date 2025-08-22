@@ -1,4 +1,4 @@
-/* 4 CASES OFFEATURE ENGINEERING*/
+/* 4 CASES OF FEATURE ENGINEERING*/
 
 --FIRST CASE
 --Use COUNT(visit_id) grouped by guest_id, then make a binary flag (is_repeat_guest).
@@ -55,27 +55,27 @@ GROUP BY da.attraction_id, da.attraction_name, da.category
 ORDER BY count_attraction DESC;
 
 
-/* 
-Thinking prompts (answered in more detail in README) 
+--========================================================================
+--Thinking prompts (answered in more detail in README) 
 
-Why would the GM or Ops care about stay_minutes?
-    Stay minutes show how long customers actually stick around. 
-    Ops can use this to plan staffing and resources better — like knowing when peak hours 
-    hit and making sure staff are ready so service doesn’t slip.
+--Why would the GM or Ops care about stay_minutes?
+--    Stay minutes show how long customers actually stick around. 
+--    Ops can use this to plan staffing and resources better — like knowing when peak hours 
+--    hit and making sure staff are ready so service doesn’t slip.
 
-Why is spend_per_person useful to Marketing vs. raw spend?
-    Spend per person gives Marketing a clearer picture than raw spend, 
-    because it shows how much each guest is actually spending. This helps them see what 
-    guests are most drawn to (like food, rides, or merch) so they can market those things more and get other people to try them too.
+--Why is spend_per_person useful to Marketing vs. raw spend?
+--    Spend per person gives Marketing a clearer picture than raw spend, 
+--    because it shows how much each guest is actually spending. This helps them see what 
+--    guests are most drawn to (like food, rides, or merch) so they can market those things more and get other people to try them too.
 
-How might wait_bucket guide scheduling or staffing?
-    Wait buckets tell you when lines are short vs. when they’re long.
-    Ops can use that to schedule staff so they’re available during the busiest times, 
-    cutting down wait times and making the customer experience smoother.
+--How might wait_bucket guide scheduling or staffing?
+--    Wait buckets tell you when lines are short vs. when they’re long.
+--    Ops can use that to schedule staff so they’re available during the busiest times, 
+--    cutting down wait times and making the customer experience smoother.
 
-Why normalize promotion_code before analysis?
-    Promotion codes were written in different ways (like VIPDAY vs. vip-day). 
-    If you don’t clean that up, the same promo gets counted as two different ones, 
-    which totally messes up the results. Normalizing makes sure you see the real performance of each code, 
-    and that your analysis isn’t misleading.
-*/ 
+--Why normalize promotion_code before analysis?
+--    Promotion codes were written in different ways (like VIPDAY vs. vip-day). 
+--    If you don’t clean that up, the same promo gets counted as two different ones, 
+--    which totally messes up the results. Normalizing makes sure you see the real performance of each code, 
+--    and that your analysis isn’t misleading.
+--========================================================================
